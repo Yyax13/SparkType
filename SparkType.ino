@@ -8,6 +8,7 @@ void setup() {
 }
 
 void loop() {
+    mainLoop();
 
 }
 
