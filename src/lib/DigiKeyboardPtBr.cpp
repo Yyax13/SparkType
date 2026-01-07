@@ -138,52 +138,22 @@ static const uint16_t _ascii_ptbr_map[128] PROGMEM = {
 
 size_t DigiKeyboardDevicePtBr::write(uint8_t chr) {
 
-        //çÇ
-        if (chr == 195) {
-          sendKeyStroke(0x33); 
-          //sendKeyStroke(0x33, MOD_SHIFT_LEFT);
-        }
-        else {          
-          unsigned int temp = pgm_read_word_near(_ascii_ptbr_map + chr);          
-          unsigned char low = temp & 0xFF;
-          unsigned char high = (temp >> 8) & 0xFF;
-          sendKeyStroke(low,high);
-        }
-        
-        return 1;
+    //çÇ
+    if (chr == 195) {
+        sendKeyStroke(0x33); 
+        //sendKeyStroke(0x33, MOD_SHIFT_LEFT);
+    
     }
-
-// size_t DigiKeyboardDevicePtBr::write(uint8_t chr) {
-//     static bool utf8 = false;
-
-//     if (chr == 0xC3) {
-//         utf8 = true;
-//         return 0;
-//     }
-
-//     if (utf8) {
-//         utf8 = false;
-
-//         if (chr == 0xA7) { // ç
-//             sendKeyStroke(0x33);
-//             return 1;
-//         }
-
-//         if (chr == 0x87) { // Ç
-//             sendKeyStroke(0x33, PTBR_MOD_SHIFT_LEFT);
-//             return 1;
-//         }
-
-//         return 0;
-//     }
-
-//     unsigned int temp = pgm_read_word_near(_ascii_ptbr_map + chr);
-//     unsigned char low = temp & 0xFF;
-//     unsigned char high = (temp >> 8) & 0xFF;
-//     sendKeyStroke(low, high);
-
-//     return 1;
-// }
+    else {          
+        unsigned int temp = pgm_read_word_near(_ascii_ptbr_map + chr);          
+        unsigned char low = temp & 0xFF;
+        unsigned char high = (temp >> 8) & 0xFF;
+        sendKeyStroke(low,high);
+    
+    }
+    
+    return 1;
+}
 
 void DigiKeyboardDevicePtBr::sendKeyReport(unsigned char *array, const unsigned int size) {
     while (!usbInterruptIsReady()) {
