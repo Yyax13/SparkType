@@ -13,9 +13,29 @@ void mainSetup() {
     _OS_ENUM os = detectOS();
     
     if (os == Linux) {
+        // Open terminal (bind, may change)
+        DigiKeyboardPtBr.sendKeyStroke(KEY_T, MOD_GUI_LEFT);
+        DigiKeyboardPtBr.delay(500);
+        
+        // Open plaintext editor (may change too, in my system i'm using gedit for .txt)
+        DigiKeyboardPtBr.print("gedit &;exit");
+        DigiKeyboardPtBr.sendKeyStroke(KEY_ENTER);
+        DigiKeyboardPtBr.delay(500);
+        
+        // Write OS name
         DigiKeyboardPtBr.println("Linux!");
         
     } else if (os == Windows) {
+        // Open run app
+        DigiKeyboardPtBr.sendKeyStroke(KEY_R, MOD_GUI_LEFT);
+        DigiKeyboardPtBr.delay(500);
+        
+        // Open notepad.exe
+        DigiKeyboardPtBr.print("notepad.exe");
+        DigiKeyboardPtBr.sendKeyStroke(KEY_ENTER);
+        DigiKeyboardPtBr.delay(500);
+        
+        // Write O name
         DigiKeyboardPtBr.println("Windows!");
         
     } else if (os == MacOS) {
