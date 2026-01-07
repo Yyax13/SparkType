@@ -17,8 +17,8 @@ void mainSetup() {
         DigiKeyboardPtBr.sendKeyStroke(KEY_T, MOD_GUI_LEFT);
         DigiKeyboardPtBr.delay(1250);
         
-        // Open plaintext editor (may change too, in my system i'm using gedit for .txt)
-        DigiKeyboardPtBr.print("gedit &;exit");
+        // Open plaintext editor (may change too, in my system i'm using nano for fast edits in plain files)
+        DigiKeyboardPtBr.print("nano");
         DigiKeyboardPtBr.sendKeyStroke(KEY_ENTER);
         DigiKeyboardPtBr.delay(1250);
         
