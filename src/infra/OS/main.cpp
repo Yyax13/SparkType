@@ -3,7 +3,7 @@
 #include "main.h"
 #include "../HID/LEDS/main.h"
 #include "../../shared/utils/blink-alert/main.h"
-#include "../../lib/DigiKeyboardPtBr.h"
+#include "../HID/CONNECTION/main.h"
 
 #define SHORT_BLINK blinkMs(50, 2);
 #define MEDIUM_BLINK blinkMs(50, 5);
@@ -15,15 +15,7 @@
 
 _OS_ENUM detectOS() {
     LedsState initialState = getLedsState();
-    clearLedResponseState();
-    cli();
-    g_hostConfigRequestCount = 0;
-    sei();
-    
-    usbDeviceDisconnect();
-    DigiKeyboard.delay(300);
-    usbDeviceConnect();
-    DigiKeyboard.delay(1200);
+    reconnectDevice();
     
     LedsState current = getLedsState();
     
