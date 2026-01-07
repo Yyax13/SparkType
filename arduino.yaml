@@ -1,0 +1,2 @@
+board: digistump:avr:digispark-tiny
+port: usb
