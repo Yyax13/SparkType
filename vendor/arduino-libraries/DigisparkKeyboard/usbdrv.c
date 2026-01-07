@@ -30,6 +30,7 @@ volatile schar usbRxLen;        /* = 0; number of bytes in usbRxBuf; 0 means fre
 uchar       usbCurrentTok;      /* last token received or endpoint number for last OUT token if != 0 */
 uchar       usbRxToken;         /* token for data we received; or endpont number for last OUT */
 volatile uchar usbTxLen = USBPID_NAK;   /* number of bytes to transmit with next IN token or handshake token */
+volatile uchar g_hostConfigRequestCount = 0; /* mod by Yyax13, declaration to global variable */
 uchar       usbTxBuf[USB_BUFSIZE];/* data to transmit with next IN, free if usbTxLen contains handshake token */
 #if USB_COUNT_SOF
 volatile uchar  usbSofCount;    /* incremented by assembler module every SOF */
@@ -395,12 +396,15 @@ uchar   index = rq->wIndex.bytes[0];
         usbNewDeviceAddr = value;
         USB_SET_ADDRESS_HOOK();
     SWITCH_CASE(USBRQ_GET_DESCRIPTOR)       /* 6 */
+        g_hostConfigRequestCount++;
         len = usbDriverDescriptor(rq);
         goto skipMsgPtrAssignment;
     SWITCH_CASE(USBRQ_GET_CONFIGURATION)    /* 8 */
+        g_hostConfigRequestCount++;
         dataPtr = &usbConfiguration;  /* send current configuration value */
         len = 1;
-    SWITCH_CASE(USBRQ_SET_CONFIGURATION)    /* 9 */
+    SWITCH_CASE(USBRQ_SET_CONFIGURATION)    /* 9 */ 
+        g_hostConfigRequestCount++;
         usbConfiguration = value;
         usbResetStall();
     SWITCH_CASE(USBRQ_GET_INTERFACE)        /* 10 */

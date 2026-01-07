@@ -6,7 +6,6 @@ static uchar g_ledWriteRemaining = 0;
 volatile bool g_ledReplyReceived = false;
 volatile uint16_t g_ledReplyCount = 0;
 
-
 const PROGMEM uchar usbHidReportDescriptor[USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH] = {
     0x05, 0x01,
     0x09, 0x06,
@@ -56,33 +55,37 @@ uchar usbFunctionSetup(uchar data[8]) {
 
     usbMsgPtr = DigiKeyboard.reportBuffer;
 
+    if ((rq->bmRequestType & USBRQ_TYPE_MASK) == USBRQ_TYPE_STANDARD) {
+        if (rq->bRequest == USBRQ_SET_CONFIGURATION ||
+            rq->bRequest == USBRQ_GET_DESCRIPTOR ||
+            rq->bRequest == USBRQ_SET_IDLE) {
+            g_hostConfigRequestCount++;
+        }
+    }
+
     if ((rq->bmRequestType & USBRQ_TYPE_MASK) == USBRQ_TYPE_CLASS) {
         if (rq->bRequest == USBRQ_HID_GET_REPORT) {
             return 0;
-
         }
 
         if (rq->bRequest == USBRQ_HID_GET_IDLE) {
             return 0;
-
         }
 
         if (rq->bRequest == USBRQ_HID_SET_IDLE) {
             idleRate = rq->wValue.bytes[1];
             return 0;
-
         }
 
         if (rq->bRequest == USBRQ_HID_SET_REPORT) {
             g_ledWriteRemaining = rq->wLength.word;
             return USB_NO_MSG;
-
         }
     }
 
     return 0;
-
 }
+
 
 uchar usbFunctionWrite(uchar *data, uchar len) {
     if (g_ledWriteRemaining == 0) {
@@ -95,8 +98,6 @@ uchar usbFunctionWrite(uchar *data, uchar len) {
 
     g_keyboardLeds = data[0];
     g_ledReplyReceived = true;
-    g_ledReplyCount++;
-
     g_ledWriteRemaining -= len;
 
     return (g_ledWriteRemaining == 0);

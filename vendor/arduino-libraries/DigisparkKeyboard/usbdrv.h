@@ -199,6 +199,12 @@ extern uchar *usbMsgPtr;
  * driver for standard control requests.
  */
  
+ 
+ extern volatile uchar g_hostConfigRequestCount;
+ /*
+  * Mod by Yyax13 to ensure that we will obtain access to some requests from host
+  */
+ 
  extern uchar usbMsgFlags;    /* flag values see USB_FLG_* */
 /* Can be set to `USB_FLG_MSGPTR_IS_ROM` in `usbFunctionSetup()` or
  * `usbFunctionDescriptor()` if `usbMsgPtr` has been set to a flash memory

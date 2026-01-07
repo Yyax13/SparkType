@@ -24,6 +24,10 @@ typedef uint8_t byte;
 
 #define BUFFER_SIZE 2 // Minimum of 2: 1 for modifiers + 1 for keystroke
 
+#ifndef USBRQ_SET_IDLE
+#define USBRQ_SET_IDLE 0x0A
+#endif
+
 #define MOD_CONTROL_LEFT    MODIFIERKEY_LEFT_CTRL
 #define MOD_SHIFT_LEFT      MODIFIERKEY_LEFT_SHIFT
 #define MOD_ALT_LEFT        MODIFIERKEY_LEFT_ALT
