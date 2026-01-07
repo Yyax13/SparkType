@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <DigiKeyboard.h>
 #include "main.h"
 #include "../../shared/utils/get-leds/main.h"
 #include "../../shared/utils/blink-alert/main.h"
@@ -9,15 +10,21 @@
 #define LED_ON digitalWrite(1, HIGH);
 #define LED_OFF digitalWrite(1, LOW);
 
-#define HOST_RESPONSE_TIMEOUT 1000
-#define WINDOWS_HOST_REQUEST_COUNT 2
+#define HOST_RESPONSE_TIMEOUT 2000
+#define WINDOWS_HOST_REQUEST_COUNT 15
 
 _OS_ENUM detectOS() {
     LedsState initialState = getLedsState();
     clearLedResponseState();
+    cli();
+    g_hostConfigRequestCount = 0;
+    sei();
     
-    DigiKeyboard.sendKeyStroke(KEY_CAPS_LOCK);
-    DigiKeyboard.delay(HOST_RESPONSE_TIMEOUT);
+    usbDeviceDisconnect();
+    DigiKeyboard.delay(300);
+    usbDeviceConnect();
+    DigiKeyboard.delay(1200);
+    
     LedsState current = getLedsState();
     
     if (!current.caps) {
@@ -32,7 +39,7 @@ _OS_ENUM detectOS() {
     _OS_ENUM os;
     if (current.replyReceived) {
         MEDIUM_BLINK
-        if (current.replyCount > WINDOWS_HOST_REQUEST_COUNT) {
+        if (g_hostConfigRequestCount > WINDOWS_HOST_REQUEST_COUNT) {
             os = Windows;
             
         } else {
