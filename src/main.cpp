@@ -27,6 +27,8 @@ void mainSetup() {
         
     } else if (os == Windows) {
         // Open run app
+        DigiKeyboardPtBr.sendKeyStroke(KEY_D, MOD_GUI_LEFT);
+        DigiKeyboardPtBr.delay(500);
         DigiKeyboardPtBr.sendKeyStroke(KEY_R, MOD_GUI_LEFT);
         DigiKeyboardPtBr.delay(500);
         
