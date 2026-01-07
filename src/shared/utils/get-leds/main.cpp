@@ -13,7 +13,7 @@ LedsState getLedsState() {
     s.scrl = (leds & (1 << 2)) != 0;
 
     s.replyReceived = g_ledReplyReceived;
-    s.replyCount    = g_ledReplyCount;
+    s.replyCount    = g_hostConfigRequestCount;
 
     return s;
 
@@ -74,7 +74,7 @@ void ensureScrl(bool expected) {
 
 void clearLedResponseState() {
     cli();
-    g_ledReplyCount = (uint16_t)0;
+    g_ledReplyCount = 0;
     g_ledReplyReceived = false;
     sei();
     
