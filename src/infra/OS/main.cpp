@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <DigiKeyboard.h>
 #include "main.h"
-#include "../../shared/utils/get-leds/main.h"
+#include "../HID/LEDS/main.h"
 #include "../../shared/utils/blink-alert/main.h"
 #include "../../lib/DigiKeyboardPtBr.h"
 
