@@ -15,12 +15,12 @@ void mainSetup() {
     if (os == Linux) {
         // Open terminal (bind, may change)
         DigiKeyboardPtBr.sendKeyStroke(KEY_T, MOD_GUI_LEFT);
-        DigiKeyboardPtBr.delay(500);
+        DigiKeyboardPtBr.delay(1250);
         
         // Open plaintext editor (may change too, in my system i'm using gedit for .txt)
         DigiKeyboardPtBr.print("gedit &;exit");
         DigiKeyboardPtBr.sendKeyStroke(KEY_ENTER);
-        DigiKeyboardPtBr.delay(500);
+        DigiKeyboardPtBr.delay(1250);
         
         // Write OS name
         DigiKeyboardPtBr.println("Linux!");
