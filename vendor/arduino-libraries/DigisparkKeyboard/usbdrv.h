@@ -6,6 +6,14 @@
  * Copyright: (c) 2005 by OBJECTIVE DEVELOPMENT Software GmbH
  * License: GNU GPL v2 (see License.txt), GNU GPL v3 or proprietary (CommercialLicense.txt)
  * This Revision: $Id: usbdrv.h 769 2009-08-22 11:49:05Z cs $
+ *
+ * Modifications:
+ *     Copyright (c) 2026 Yyax13
+ *     Minor adaptations and interface adjustments for integration
+ *     with custom USB HID firmware components.
+ *
+ *     These modifications are distributed under the same license
+ *     terms as the original work.
  */
 
 #ifndef __usbdrv_h_included__
@@ -720,3 +728,4 @@ typedef struct usbRequest{
 /* ------------------------------------------------------------------------- */
 
 #endif /* __usbdrv_h_included__ */
+
