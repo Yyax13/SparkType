@@ -1,3 +1,26 @@
+/*
+ * DigiKeyboard.cpp
+ *
+ * Implementation file separated from DigiKeyboard.h.
+ *
+ * Based on Obdev's AVRUSB code.
+ * Modified for Digispark by Digistump.
+ *
+ * This file is a derived work due to direct linkage with
+ * GPL-licensed V-USB components.
+ *
+ * Copyright (c) 2026 Yyax13
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ */
 #include "DigiKeyboard.h"
 
 static uchar idleRate;
