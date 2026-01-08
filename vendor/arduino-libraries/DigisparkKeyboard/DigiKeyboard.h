@@ -4,7 +4,12 @@
  * TODO: Make a proper file header. :-)
  * Modified for Digispark by Digistump
  * 
- * Modified by Yyax13 to avoid multiple defs error
+ * Modified by Yyax13 to avoid multiple defs error.
+ * This file don't contains a license, so i just will add my copyright here:
+ * Modifications:
+ *     Copyright (c) 2026 Yyax13
+ *     Adjustments to avoid multiple definition errors and
+ *     refactoring for separated implementation.
  */
 #ifndef __DigiKeyboard_h__
 #define __DigiKeyboard_h__
@@ -202,3 +207,4 @@ uchar usbFunctionSetup(uchar data[8]);
 #endif
 
 #endif // __DigiKeyboard_h__
+
