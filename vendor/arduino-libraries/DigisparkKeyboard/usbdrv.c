@@ -6,7 +6,16 @@
  * Copyright: (c) 2005 by OBJECTIVE DEVELOPMENT Software GmbH
  * License: GNU GPL v2 (see License.txt), GNU GPL v3 or proprietary (CommercialLicense.txt)
  * This Revision: $Id: usbdrv.c 763 2009-08-22 10:27:24Z cs $
+ *
+ * Modifications:
+ *     Copyright (c) 2026 Yyax13
+ *     Adjustments and extensions for custom USB HID firmware,
+ *     including integration with higher-level input logic.
+ *
+ *     These modifications are distributed under the same license
+ *     terms as the original work.
  */
+
 
 #include "usbportability.h"
 #include "usbdrv.h"
@@ -633,3 +642,4 @@ USB_PUBLIC void usbInit(void)
 }
 
 /* ------------------------------------------------------------------------- */
+
