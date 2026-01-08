@@ -6,7 +6,16 @@
  * Copyright: (c) 2005 by OBJECTIVE DEVELOPMENT Software GmbH
  * License: GNU GPL v2 (see License.txt), GNU GPL v3 or proprietary (CommercialLicense.txt)
  * This Revision: $Id: usbconfig-prototype.h 767 2009-08-22 11:39:22Z cs $
+ *
+ * Modifications:
+ *     Copyright (c) 2026 Yyax13
+ *     Changes include configuration adjustments and integration
+ *     for custom USB HID firmware usage.
+ *
+ *     These modifications are distributed under the same license
+ *     terms as the original work.
  */
+
 
 #ifndef __usbconfig_h_included__
 #define __usbconfig_h_included__
@@ -322,3 +331,4 @@ section at the end of this file).
 #include "usbboardconfig.h"
 
 #endif /* __usbconfig_h_included__ */
+
