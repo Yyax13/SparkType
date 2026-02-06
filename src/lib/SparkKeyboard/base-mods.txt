@@ -1,0 +1,16 @@
+Developer (you) should remap all that for your write logic.
+Don't forget that you always can use another macro names e.g.:
+instead of  BASE_MOD_CONTROL_LEFT you can use JAP_MOD_CONTROL_LEFT.
+
+#ifdef SPARKTYPE_LAYOUT_BASE
+
+#define BASE_MOD_CONTROL_LEFT    (1 << 8)
+#define BASE_MOD_SHIFT_LEFT      (1 << 9)
+#define BASE_MOD_ALT_LEFT        (1 << 10)
+#define BASE_MOD_GUI_LEFT        (1 << 11)
+#define BASE_MOD_CONTROL_RIGHT   (1 << 12)
+#define BASE_MOD_SHIFT_RIGHT     (1 << 13)
+#define BASE_MOD_ALT_RIGHT       (1 << 14)
+#define BASE_MOD_GUI_RIGHT       (1 << 15)
+
+#endif
