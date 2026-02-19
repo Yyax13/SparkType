@@ -1,14 +1,13 @@
 #include <Arduino.h>
-#include "lib/DigiKeyboardPtBr.h"
+#include "lib/SparkKeyboard/layouts/pt-br/main.h"
 #include "shared/utils/blink-alert/main.h"
-#include "infra/OS/main.h"
 
 void mainSetup() {
-    DigiKeyboardPtBr.sendKeyStroke(0);
+    SparktypeKeyboardPTBR.sendKeyStroke(0);
 
     // Blinks for 5 secs
     blinkAlert(5);
-    _OS_ENUM os = detectOS();
+    SparktypeKeyboardPTBR.println("Helo World!");
     
 }
 
