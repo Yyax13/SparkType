@@ -4,11 +4,6 @@
 void setup() {
     pinMode(1, OUTPUT);
     mainSetup();
-    
 }
 
-void loop() {
-    mainLoop();
-
-}
-
+void loop() { mainLoop(); }
