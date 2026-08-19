@@ -20,7 +20,7 @@
 #ifndef __usbconfig_h_included__
 #define __usbconfig_h_included__
 
-#include "settings.h"
+#include "../../../src/config.h"
 
 /*
 General Description:
@@ -192,7 +192,7 @@ section at the end of this file).
 
 /* -------------------------- Device Description --------------------------- */
 
-#define USB_CFG_VENDOR_ID USB_VENDOR_ID
+#define USB_CFG_VENDOR_ID VID
 /* USB vendor ID for the device, low byte first. If you have registered your
  * own Vendor ID, define it here. Otherwise you may use one of obdev's free
  * shared VID/PID pairs. Be sure to read USB-IDs-for-free.txt for rules!
@@ -201,7 +201,7 @@ section at the end of this file).
  * with libusb: 0x16c0/0x5dc.  Use this VID/PID pair ONLY if you understand
  * the implications!
  */
-#define USB_CFG_DEVICE_ID USB_PRODUCT_ID
+#define USB_CFG_DEVICE_ID PID
 /* This is the ID of the product, low byte first. It is interpreted in the
  * scope of the vendor ID. If you have registered your own VID with usb.org
  * or if you have licensed a PID from somebody else, define it here. Otherwise
@@ -212,11 +212,11 @@ section at the end of this file).
  * with libusb: 0x16c0/0x5dc.  Use this VID/PID pair ONLY if you understand
  * the implications!
  */
-#define USB_CFG_DEVICE_VERSION 0x02, 0x00
+#define USB_CFG_DEVICE_VERSION VERSION
 /* Version number of the device: Minor number first, then major number.
  */
-#define USB_CFG_VENDOR_NAME 'S', 'p', 'a', 'r', 'k', 'T', 'y', 'p', 'e'
-#define USB_CFG_VENDOR_NAME_LEN 9
+#define USB_CFG_VENDOR_NAME VENDOR_NAME
+#define USB_CFG_VENDOR_NAME_LEN VENDOR_NAME_LEN
 /* These two values define the vendor name returned by the USB device. The name
  * must be given as a list of characters under single quotes. The characters
  * are interpreted as Unicode (UTF-16) entities.
@@ -225,10 +225,8 @@ section at the end of this file).
  * obdev's free shared VID/PID pair. See the file USB-IDs-for-free.txt for
  * details.
  */
-#define USB_CFG_DEVICE_NAME                                                    \
-  'S', 'p', 'a', 'r', 'k', 'T', 'y', 'p', 'e', ' ', 'K', 'e', 'y', 'S', 't',   \
-      'r', 'o', 'k', 'e', ' ', 'I', 'n', 'j', 'e', 'c', 't', 'o', 'r'
-#define USB_CFG_DEVICE_NAME_LEN 28
+#define USB_CFG_DEVICE_NAME DEVICE_NAME
+#define USB_CFG_DEVICE_NAME_LEN DEVICE_NAME_LEN
 /* Same as above for the device name. If you don't want a device name, undefine
  * the macros. See the file USB-IDs-for-free.txt before you assign a name if
  * you use a shared VID/PID.
@@ -248,7 +246,7 @@ section at the end of this file).
  * Class 0xff is "vendor specific".
  */
 #define USB_CFG_INTERFACE_CLASS                                                \
-  0x03 /* HID */ /* define class here if not at device level */
+    0x03 /* HID */ /* define class here if not at device level */
 #define USB_CFG_INTERFACE_SUBCLASS 0x01
 #define USB_CFG_INTERFACE_PROTOCOL 0x01
 /* See USB specification if you want to conform to an existing device class or
