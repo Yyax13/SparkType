@@ -15,17 +15,19 @@
 #define __DigiKeyboard_h__
 
 #include <Arduino.h>
-#include <avr/pgmspace.h>
 #include <avr/interrupt.h>
-#include <util/delay.h>
+#include <avr/pgmspace.h>
 #include <string.h>
+#include <util/delay.h>
 
-#include "usbdrv.h"
 #include "keylayouts.h"
+#include "usbdrv.h"
 
 typedef uint8_t byte;
 
-#define TEST_STRING "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890 !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
+#define TEST_STRING                                                            \
+    "abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ 1234567890 "        \
+    "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
 
 #define BUFFER_SIZE 2 // Minimum of 2: 1 for modifiers + 1 for keystroke
 
@@ -33,17 +35,21 @@ typedef uint8_t byte;
 #define USBRQ_SET_IDLE 0x0A
 #endif
 
-#define MOD_CONTROL_LEFT    MODIFIERKEY_LEFT_CTRL
-#define MOD_SHIFT_LEFT      MODIFIERKEY_LEFT_SHIFT
-#define MOD_ALT_LEFT        MODIFIERKEY_LEFT_ALT
-#define MOD_GUI_LEFT        MODIFIERKEY_LEFT_GUI
-#define MOD_CONTROL_RIGHT   MODIFIERKEY_RIGHT_CTRL
-#define MOD_SHIFT_RIGHT     MODIFIERKEY_RIGHT_SHIFT
-#define MOD_ALT_RIGHT       MODIFIERKEY_RIGHT_ALT
-#define MOD_GUI_RIGHT       MODIFIERKEY_RIGHT_GUI
+#ifndef LED_BUILTIN
+#define LED_BUILTIN 1
+#endif
 
-class DigiKeyboardDevice: public Print {
-public:
+#define MOD_CONTROL_LEFT MODIFIERKEY_LEFT_CTRL
+#define MOD_SHIFT_LEFT MODIFIERKEY_LEFT_SHIFT
+#define MOD_ALT_LEFT MODIFIERKEY_LEFT_ALT
+#define MOD_GUI_LEFT MODIFIERKEY_LEFT_GUI
+#define MOD_CONTROL_RIGHT MODIFIERKEY_RIGHT_CTRL
+#define MOD_SHIFT_RIGHT MODIFIERKEY_RIGHT_SHIFT
+#define MOD_ALT_RIGHT MODIFIERKEY_RIGHT_ALT
+#define MOD_GUI_RIGHT MODIFIERKEY_RIGHT_GUI
+
+class DigiKeyboardDevice : public Print {
+  public:
     DigiKeyboardDevice() {
         noInterrupts();
         usbDeviceDisconnect();
@@ -60,9 +66,7 @@ public:
         usbSetInterrupt(reportBuffer, sizeof(reportBuffer));
     }
 
-    void update() {
-        usbPoll();
-    }
+    void update() { usbPoll(); }
 
     // delay while updating until we are finished delaying
     void delay(long milli) {
@@ -76,18 +80,14 @@ public:
     }
 
     //sendKeyStroke: sends a key press AND release
-    void sendKeyStroke(byte keyStroke) {
-        sendKeyStroke(keyStroke, 0);
-    }
+    void sendKeyStroke(byte keyStroke) { sendKeyStroke(keyStroke, 0); }
 
     void enableLEDFeedback() {
         sUseFeedbackLed = true;
         pinMode(LED_BUILTIN, OUTPUT);
     }
 
-    void disableLEDFeedback() {
-        sUseFeedbackLed = false;
-    }
+    void disableLEDFeedback() { sUseFeedbackLed = false; }
 
     //sendKeyStroke: sends a key press AND release with modifiers
     void sendKeyStroke(byte keyStroke, byte modifiers) {
@@ -109,9 +109,7 @@ public:
 
     //sendKeyPress: sends a key press only - no release
     //to release the key, send again with keyPress=0
-    void sendKeyPress(byte keyPress) {
-        sendKeyPress(keyPress, 0);
-    }
+    void sendKeyPress(byte keyPress) { sendKeyPress(keyPress, 0); }
 
     //sendKeyPress: sends a key press only, with modifiers - no release
     //to release the key, send again with keyPress=0
@@ -144,7 +142,8 @@ public:
             modifier |= MODIFIERKEY_RIGHT_ALT;
 #endif
 #ifdef RCTRL_MASK
-        if (keycode & RCTRL_MASK) modifier |= MODIFIERKEY_RIGHT_CTRL;
+        if (keycode & RCTRL_MASK)
+            modifier |= MODIFIERKEY_RIGHT_CTRL;
 #endif
         return modifier;
     }
@@ -156,7 +155,7 @@ public:
         uint8_t key = keycode & KEYCODE_MASK_SCANCODE;
         // the only valid ASCII code which has a scancode > 63
         if (key == KEY_NON_US_BS_MAPPING) {
-            key = (uint8_t) KEY_NON_US_BS;
+            key = (uint8_t)KEY_NON_US_BS;
         }
         return key;
     }
@@ -167,31 +166,34 @@ public:
     size_t write(uint8_t chr) {
         uint8_t data = 0;
         if (chr == '\b') {
-            data = (uint8_t) KEY_BACKSPACE; // 0x08
+            data = (uint8_t)KEY_BACKSPACE; // 0x08
         } else if (chr == '\t') {
-            data = (uint8_t) KEY_TAB;       // 0x09
+            data = (uint8_t)KEY_TAB; // 0x09
         } else if (chr == '\n') {
-            data = (uint8_t) KEY_ENTER;     // 0x0A
+            data = (uint8_t)KEY_ENTER; // 0x0A
         } else if (chr == '\r') {
-            data = (uint8_t) KEY_ENTER;     // 0x0D
+            data = (uint8_t)KEY_ENTER; // 0x0D
         } else if (chr >= 0x20) {
             // read from mapping table
             data = pgm_read_byte_near(keycodes_ascii + (chr - 0x20));
         }
         if (data) {
-            sendKeyStroke(keycode_to_key(data), keycode_to_modifier(data), sUseFeedbackLed);
+            sendKeyStroke(keycode_to_key(data), keycode_to_modifier(data),
+                          sUseFeedbackLed);
         }
         return 1;
     }
 
     bool sUseFeedbackLed = false;
-    uchar reportBuffer[2];    // buffer for HID reports [ 1 modifier byte + (len-1) key strokes]
+    uchar reportBuffer
+        [2]; // buffer for HID reports [ 1 modifier byte + (len-1) key strokes]
     using Print::write;
 };
 
 extern DigiKeyboardDevice DigiKeyboard;
 
-extern const PROGMEM uchar usbHidReportDescriptor[USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH];
+extern const PROGMEM uchar
+    usbHidReportDescriptor[USB_CFG_HID_REPORT_DESCRIPTOR_LENGTH];
 extern volatile uchar g_keyboardLeds;
 extern volatile bool g_ledReplyReceived;
 extern volatile uint16_t g_ledReplyCount;
@@ -207,4 +209,3 @@ uchar usbFunctionSetup(uchar data[8]);
 #endif
 
 #endif // __DigiKeyboard_h__
-
