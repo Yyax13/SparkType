@@ -1,9 +1,9 @@
-#include <Arduino.h>
-#include <DigiKeyboard.h>
 #include "main.h"
-#include "../HID/LEDS/main.h"
 #include "../../shared/utils/blink-alert/main.h"
 #include "../HID/CONNECTION/main.h"
+#include "../HID/LEDS/main.h"
+#include <Arduino.h>
+#include <DigiKeyboard.h>
 
 #define SHORT_BLINK blinkMs(50, 2);
 #define MEDIUM_BLINK blinkMs(50, 5);
@@ -16,38 +16,30 @@
 _OS_ENUM detectOS() {
     LedsState initialState = getLedsState();
     reconnectDevice();
-    
     LedsState current = getLedsState();
-    
+
     if (!current.caps) {
         LED_ON
         DigiKeyboard.sendKeyStroke(KEY_CAPS_LOCK);
         DigiKeyboard.delay(HOST_RESPONSE_TIMEOUT);
         LED_OFF
         SHORT_BLINK
-        
     }
-    
+
     _OS_ENUM os;
     if (current.replyReceived) {
         MEDIUM_BLINK
-        if (g_hostConfigRequestCount > WINDOWS_HOST_REQUEST_COUNT) {
+        if (g_hostConfigRequestCount > WINDOWS_HOST_REQUEST_COUNT)
             os = Windows;
-            
-        } else {
+        else
             os = Linux;
-            
-        }
-        
-    } else {
+
+    } else
         os = MacOS;
-        
-    }
-    
+
     clearLedResponseState();
     resetLedsState(initialState);
-    
+
     DigiKeyboard.delay(500);
     return os;
-    
 };

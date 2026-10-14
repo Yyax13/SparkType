@@ -33,16 +33,15 @@
  * 
  */
 
-#include <stdint.h>
-#include <stddef.h>
-#include <avr/pgmspace.h>
 #include <DigiKeyboard.h>
+#include <avr/pgmspace.h>
+#include <stddef.h>
+#include <stdint.h>
 
 class SparktypeKeyboard : public DigiKeyboardDevice {
-    public:
-        size_t write(uint8_t chr);
-        void sendKeyReport(unsigned char *array, const unsigned int size);
-        
+  public:
+    size_t write(uint8_t chr);
+    void sendKeyReport(unsigned char *array, const unsigned int size);
 };
 
 #endif

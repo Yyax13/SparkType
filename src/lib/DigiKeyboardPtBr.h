@@ -4,9 +4,9 @@
 #ifndef DIGIKEYBOARDPTBR_H
 #define DIGIKEYBOARDPTBR_H
 
-#include <stdint.h>
-#include <stddef.h>
 #include <DigiKeyboard.h>
+#include <stddef.h>
+#include <stdint.h>
 
 #define PTBR_MOD_CONTROL_LEFT (1 << 8)
 #define PTBR_MOD_SHIFT_LEFT (1 << 9)
@@ -18,7 +18,7 @@
 #define PTBR_MOD_GUI_RIGHT (1 << 15)
 
 class DigiKeyboardDevicePtBr : public DigiKeyboardDevice {
-public:
+  public:
     size_t write(uint8_t chr);
     void sendKeyReport(unsigned char *array, const unsigned int size);
 };
