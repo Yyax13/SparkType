@@ -1,186 +1,176 @@
 # SparkType
 
-**SparkType** is a HID-based project built on **Digispark (ATtiny85 + V-USB)**, focused on keystroke injection while maintaining an **explicit and auditable USB identity**.
+SparkType turns a Digispark (ATtiny85 + V-USB) into a USB HID keyboard you drive from your own firmware. It keeps a readable USB identity so the device is easy to spot and audit.
 
-The device enumerates as a standard USB keyboard, but exposes **clear USB strings** (Manufacturer / Product), allowing **system administrators and security teams** to use them as **IOCs (Indicators of Compromise)** if the device is misused.
+The board enumerates as a standard boot-protocol keyboard. It also reports explicit Manufacturer and Product strings. Tools like `lsusb`, `dmesg`, USB Tree View, and USBDeview show exactly what it is, which gives sysadmins and incident responders a concrete IOC if someone misuses the hardware.
 
----
+## Goals
 
-## 🎯 Project Goals
+- Drive a HID keyboard over V-USB on an ATtiny85
+- Work on Linux and Windows
+- Wrap the build and upload steps in a few `make` targets
+- Publish a clear USB identity
+- Give researchers a bench for HID internals, USB descriptors, BadUSB, detection, and incident response
 
-- Implement a functional HID keyboard using V-USB
-- Full compatibility with Linux and Windows
-- Simple build and upload workflow via `arduino-cli`
-- Explicit USB identity for auditability
-- Serve as a research and lab platform for:
-  - HID internals
-  - USB descriptors
-  - BadUSB concepts
-  - Detection, defense, and incident response
+## Design
 
----
+End users see a generic HID keyboard. Administrators identify the device through its USB strings and descriptors. SparkType does not obfuscate, impersonate a commercial keyboard, or try to evade endpoint detection. A clear identity keeps the project traceable and pushes use toward labs and authorized testing.
 
-## 🧠 Design Philosophy
+## Architecture
 
-- **End users** see only a generic HID keyboard
-- **Administrators / blue teams** can clearly identify the device via:
-  - `lsusb -v`
-  - `dmesg`
-  - USB Tree View (Windows)
-- No aggressive obfuscation or device impersonation
-- Explicit identity prioritizes traceability and responsible use
+- MCU: ATtiny85
+- USB stack: V-USB
+- USB class: HID keyboard, boot protocol
+- Layout-driven ASCII mapping, with a PT-BR (ABNT2) implementation included
+- Device identity and USB strings centralized in `src/config.h`, wired into V-USB through `vendor/arduino-libraries/DigisparkKeyboard/usbconfig.h`
 
----
+Modules under `src`:
 
-## 🧩 Architecture Overview
+| Path | Role |
+|------|------|
+| `lib/SparkKeyboard` | Base keyboard class and the layout pattern |
+| `lib/SparkKeyboard/layouts/pt-br` | ABNT2 key map plus UTF-8 `ç` / `Ç` handling |
+| `lib/DigiKeyboardPtBr` | Earlier single-file PT-BR keyboard, kept for reference |
+| `infra/HID/CONNECTION` | Connect, disconnect, and reconnect the USB device |
+| `infra/HID/LEDS` | Read and restore Caps / Num / Scroll state, track LED replies |
+| `infra/OS` | Detect Linux, Windows, or macOS from host LED traffic |
+| `shared/utils/blink-alert` | Onboard LED blink helpers |
+| `config.h` | VID, PID, version, and USB strings |
 
-- MCU: **ATtiny85**
-- USB stack: **V-USB**
-- USB Class: **HID Keyboard (Boot Protocol)**
-- Custom keyboard layouts (e.g. PT-BR)
-- Modular internal structure:
-  - HID handling
-  - LED state control (Caps / Num / Scroll)
-  - OS detection
-  - TTY and utilities
+`SparkType.ino` calls `mainSetup()` and `mainLoop()`. Edit `src/main.cpp` to change behavior. It currently runs a small hello-world that blinks the LED and types a line.
 
----
+## Requirements
 
-## 🛠️ Requirements
+Software:
 
-### Software
 - `arduino-cli`
-- Digistump AVR core
+- Digistump AVR core (`digistump:avr`)
 - `make`
-- Linux (recommended for development)
+- Linux for development (upload is tested against `/dev/hidraw0`)
 
-### Hardware
+Hardware:
+
 - Digispark (ATtiny85)
-- Functional USB port
+- A USB port
 
----
-
-## 📦 Project Structure
+## Project structure
 
 ```
-
 .
+├── LICENSE
 ├── Makefile
+├── README.md
+├── SECURITY.md
 ├── SparkType.ino
+├── arduino.yaml
 ├── src
+│   ├── config.h
+│   ├── main.cpp
+│   ├── include
+│   │   └── main.h
 │   ├── infra
 │   │   ├── HID
-│   │   ├── OS
-│   │   └── TTY
+│   │   │   ├── CONNECTION
+│   │   │   │   ├── main.cpp
+│   │   │   │   └── main.h
+│   │   │   └── LEDS
+│   │   │       ├── main.cpp
+│   │   │       └── main.h
+│   │   └── OS
+│   │       ├── main.cpp
+│   │       └── main.h
 │   ├── lib
-│   │   └── DigiKeyboardPtBr.*
+│   │   ├── DigiKeyboardPtBr.cpp
+│   │   ├── DigiKeyboardPtBr.h
+│   │   └── SparkKeyboard
+│   │       ├── ascii-map.txt
+│   │       ├── base-mods.txt
+│   │       ├── main.h
+│   │       └── layouts
+│   │           └── pt-br
+│   │               ├── main.cpp
+│   │               └── main.h
 │   └── shared
-├── vendor
-│   └── arduino-libraries
-│       └── DigisparkKeyboard
-└── build
-
+│       └── utils
+│           └── blink-alert
+│               ├── main.cpp
+│               └── main.h
+└── vendor
+    └── arduino-libraries
+        └── DigisparkKeyboard
 ```
 
----
+## Build
 
-## 🔧 Build
+Compile:
 
-The project uses a minimal **Makefile** wrapping `arduino-cli`.
-
-### Compile
 ```
-
 make
-
 ```
 
-or explicitly:
-```
+`make compile` does the same thing. Remove artifacts with `make clean`, and run a full rebuild with `make rebuild`.
 
-make compile
+The Makefile wraps `arduino-cli` with:
 
-```
+- Board `digistump:avr:digispark-tiny`
+- Libraries from `vendor/arduino-libraries`
+- Output to `build/`
 
-### Clean build artifacts
-```
-
-make clean
+## Upload
 
 ```
-
-### Full rebuild
-```
-
-make rebuild
-
-```
-
----
-
-## 🚀 Uploading to Digispark
-
-Default configuration:
-- Board: `digistump:avr:digispark-tiny`
-- Port: `/dev/hidraw0`
-
-```
-
 make upload
-
 ```
 
-⚠️ **Note**: Digispark enters bootloader mode only for a few seconds after being plugged in.  
-Run the upload command first, then connect the device.
+The default port is `/dev/hidraw0`. Change `PORT` in the Makefile if your system assigns a different node.
 
----
+The Digispark only enters its bootloader for a few seconds after power-up. Start the upload first, then plug the board in when the tool asks.
 
-## 🔍 USB Identity
-
-Example enumeration on Linux:
+## USB identity
 
 ```
-
-ID 16c0:27db Van Ooijen Technische Informatica Keyboard
-iManufacturer  SparkType
-iProduct       SparkType KeyStroke Injector
-
+$ lsusb -v
+idVendor        0x1209
+idProduct       0x5153
+iManufacturer   SparkType
+iProduct        SparkType KeyStroke Injector
 ```
 
-- VID/PID follow the V-USB shared VID scheme
-- USB strings are intentionally explicit
-- Designed to support security monitoring and incident response
+Values come from `src/config.h`:
 
----
+| Field | Value |
+|-------|-------|
+| VID | `0x1209` |
+| PID | `0x5153` |
+| Vendor string | `SparkType` |
+| Product string | `SparkType KeyStroke Injector` |
+| Version bytes | `0x0200` |
 
-## 🪟 Windows Behavior
+`0x1209` is the shared pid.codes vendor ID. The strings stay explicit on purpose, so `lsusb`, `dmesg`, and Windows device tools surface something a responder can match.
 
-- Appears as:
-  - `HID Keyboard Device`
-  - `USB Input Device`
-- Full descriptors visible via:
-  - USB Tree View
-  - USBDeview
-- Windows aggressively caches devices by VID/PID
+## Windows behavior
 
----
+Windows lists the board as `HID Keyboard Device` and `USB Input Device`. USB Tree View and USBDeview show the full descriptors. Windows caches devices by VID/PID, so a re-flashed board with the same IDs may reuse the old entry until you uninstall it.
 
-## ⚠️ Disclaimer
+## Adding a layout
 
-This project is intended for:
-- research
-- education
-- controlled environments
-- labs and CTFs
-- internal testing
+`src/lib/SparkKeyboard` lets you add a keyboard layout as its own folder. The `pt-br` layout shows the pattern:
 
-❌ **Do not use without explicit authorization.**  
-The author assumes no responsibility for misuse.
+1. Create `src/lib/SparkKeyboard/layouts/<locale>/`.
+2. In `main.h`, include `../../main.h`, define the modifier macros, and declare your `SparktypeKeyboard` instance.
+3. In `main.cpp`, define the 128-entry ASCII map and implement `SparktypeKeyboard::write` and `SparktypeKeyboard::sendKeyReport`.
+4. Include your layout header where you need it.
 
----
+`src/lib/SparkKeyboard/base-mods.txt` documents the modifier macros, and `ascii-map.txt` documents the map format.
 
-## 📜 License
+## Security
 
-Please refer to the licenses of included components, especially:
-- V-USB
-- DigisparkKeyboard
+See [SECURITY.md](SECURITY.md) for supported use, detection guidance, and how to report issues.
+
+## Disclaimer
+
+SparkType is built for research, education, labs, CTFs, and internal testing with authorization. Do not run it without explicit permission. The author takes no responsibility for misuse.
+
+## License
+
+MIT. See [LICENSE](LICENSE). Bundled components keep their own licenses, notably V-USB and DigisparkKeyboard under `vendor/arduino-libraries/DigisparkKeyboard`.
