@@ -11,7 +11,6 @@ typedef struct {
 
     bool replyReceived;
     uint16_t replyCount;
-
 } LedsState;
 
 LedsState getLedsState();
