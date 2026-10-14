@@ -1,5 +1,4 @@
-#ifndef __SPARKTYPE_CFG
-#define __SPARKTYPE_CFG
+#pragma once
 
 #define VERSION 0x02, 0x00
 #define VID 0x09, 0x12
@@ -13,4 +12,4 @@
         'r', 'o', 'k', 'e', ' ', 'I', 'n', 'j', 'e', 'c', 't', 'o', 'r'
 #define DEVICE_NAME_LEN 28
 
-#endif
+#define SPARKTYPE_LAYOUT_PTBR

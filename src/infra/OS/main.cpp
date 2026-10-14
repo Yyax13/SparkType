@@ -5,11 +5,6 @@
 #include <Arduino.h>
 #include <DigiKeyboard.h>
 
-#define SHORT_BLINK blinkMs(50, 2);
-#define MEDIUM_BLINK blinkMs(50, 5);
-#define LED_ON digitalWrite(1, HIGH);
-#define LED_OFF digitalWrite(1, LOW);
-
 #define HOST_RESPONSE_TIMEOUT 2000
 #define WINDOWS_HOST_REQUEST_COUNT 15
 

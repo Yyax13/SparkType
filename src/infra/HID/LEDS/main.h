@@ -1,5 +1,4 @@
-#ifndef GET_LEDS_H
-#define GET_LEDS_H
+#pragma once
 
 #include <DigiKeyboard.h>
 #include <stdint.h>
@@ -21,5 +20,3 @@ void ensureScrl(bool expected);
 
 void resetLedsState(LedsState original);
 void clearLedResponseState();
-
-#endif
