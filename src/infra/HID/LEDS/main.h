@@ -5,13 +5,13 @@
 #include <stdint.h>
 
 typedef struct {
-    bool        caps;
-    bool        num;
-    bool        scrl;
-    
-    bool        replyReceived;
-    uint16_t    replyCount;
-    
+    bool caps;
+    bool num;
+    bool scrl;
+
+    bool replyReceived;
+    uint16_t replyCount;
+
 } LedsState;
 
 LedsState getLedsState();
