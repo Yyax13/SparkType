@@ -1,5 +1,5 @@
-#ifndef SPARKTYPE_LAYOUT_PTBR
-#define SPARKTYPE_LAYOUT_PTBR
+#ifndef SPARKTYPE_LAYOUT_PTBR_H
+#define SPARKTYPE_LAYOUT_PTBR_H
 
 #include "../../main.h"
 

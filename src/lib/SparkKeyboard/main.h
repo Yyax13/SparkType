@@ -28,10 +28,13 @@
  *              The file also need to declare something like:
  *              SparktypeKeyboard SparktypeKeyboardPTBR = SparktypeKeyboard();
  *              
- *          After doing that, include the file l/pt-br/main.h in your project
- *          and use it! :)
+ *          After creating the layout, select it in src/config.h by defining
+ *          its SPARKTYPE_LAYOUT_* macro, then include this main.h and use the
+ *          generic "SparkKeyboard" handle! :)
  * 
  */
+
+#include "../../config.h"
 
 #include <DigiKeyboard.h>
 #include <avr/pgmspace.h>
@@ -43,5 +46,17 @@ class SparktypeKeyboard : public DigiKeyboardDevice {
     size_t write(uint8_t chr);
     void sendKeyReport(unsigned char *array, const unsigned int size);
 };
+
+/*
+ * Layout selection.
+ * Pick exactly one layout in src/config.h, then use the generic
+ * "SparkKeyboard" handle everywhere without caring about the locale.
+ */
+#if defined(SPARKTYPE_LAYOUT_PTBR)
+#include "layouts/pt-br/main.h"
+#define SparkKeyboard SparktypeKeyboardPTBR
+#else
+#error "No SparkType layout selected: define one layout in src/config.h."
+#endif
 
 #endif
