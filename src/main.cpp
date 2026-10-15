@@ -8,7 +8,8 @@ void mainSetup() {
 
     // Blinks for 3 secs
     blinkAlert(3);
-    SparkKeyboard.println("# Helo World! I'm hoWo and this is SparkType!");
+    SparkKeyboard.println("# Olá, Mundo!!");
+    SparkKeyboard.println("# Hello, World!!");
 }
 
 void mainLoop() { return; };
