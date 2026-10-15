@@ -1,4 +1,5 @@
 #include "lib/SparkKeyboard/main.h"
+#include "infra/HID/CONNECTION/main.h"
 #include "shared/utils/blink-alert/main.h"
 #include <Arduino.h>
 
@@ -12,4 +13,10 @@ void mainSetup() {
     SparkKeyboard.println("# Hello, World!!");
 }
 
-void mainLoop() { return; };
+void mainLoop() {
+    disconnectDevice();
+    for (;;) {
+        usbPoll();
+        _delay_ms(5);
+    }
+};
