@@ -14,9 +14,7 @@ void mainSetup() {
 }
 
 void mainLoop() {
-    disconnectDevice();
-    for (;;) {
-        usbPoll();
-        _delay_ms(5);
-    }
+    shutdevice();
+    for (;;)
+        continue;
 };

@@ -1,5 +1,6 @@
 #include "main.h"
 #include <DigiKeyboard.h>
+#include <avr/sleep.h>
 
 #include "../LEDS/main.h"
 
@@ -33,4 +34,17 @@ void connectDevice() {
     DigiKeyboard.delay(300);
     usbDeviceConnect();
     DigiKeyboard.delay(1200);
+}
+
+void shutdevice() {
+    disconnectDevice();
+
+    USB_INTR_ENABLE &= ~(1 << USB_INTR_ENABLE_BIT);
+    set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+    sleep_enable();
+
+    ADCSRA &= ~(1 << ADEN);
+
+    cli();
+    sleep_cpu();
 }
