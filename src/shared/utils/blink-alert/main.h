@@ -1,7 +1,7 @@
 #pragma once
 
-#define SHORT_BLINK blinkMs(50, 2);
-#define MEDIUM_BLINK blinkMs(50, 5);
+#include <Arduino.h>
+
 #define LED_ON digitalWrite(1, HIGH);
 #define LED_OFF digitalWrite(1, LOW);
 
@@ -11,3 +11,6 @@ void blinkAlert(int times);
 /// Min ms: 50;
 /// Min times: 1;
 void blinkMs(int ms, int times);
+
+#define SHORT_BLINK blinkMs(50, 2);
+#define MEDIUM_BLINK blinkMs(50, 5);

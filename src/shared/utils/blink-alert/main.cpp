@@ -3,15 +3,15 @@
 
 void blinkAlert(int times) {
     for (int i = 0; i < times; i++) {
-        digitalWrite(1, HIGH);
+        LED_ON;
         delay(450);
-        digitalWrite(1, LOW);
+        LED_OFF;
         delay(50);
 
         for (int ii = 0; ii < 10; ii++) {
-            digitalWrite(1, HIGH);
+            LED_ON;
             delay(50);
-            digitalWrite(1, LOW);
+            LED_OFF;
             delay(50);
         }
     }
@@ -22,8 +22,8 @@ void blinkMs(int ms, int times) {
         return;
 
     for (int i = 0; i < times; i++) {
-        digitalWrite(1, HIGH);
+        LED_ON;
         delay(ms);
-        digitalWrite(1, LOW);
+        LED_OFF;
     }
 };
