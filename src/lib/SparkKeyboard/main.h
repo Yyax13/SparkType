@@ -49,20 +49,8 @@ class SparktypeKeyboard : public DigiKeyboardDevice {
     size_t write(uint8_t chr);
     void sendKeyReport(unsigned char *array, const unsigned int size);
 
-    /*
-     * Default key spacing, shared by every layout.
-     *
-     * This is the default behaviour of the SparkKeyboard spec: layouts do
-     * not need to call it, they just send strokes and the delay is applied
-     * automatically (see the sendKeyStroke overloads below).
-     *
-     * msDelay has no upper bound and there is no cap helper here, so the
-     * base delay is wrapped with modulo 111: it always lands in [0, 110] ms.
-     *   - msDelay == 0        -> no delay at all.
-     *   - msDelay <= 5        -> plain delay, jitter is ignored.
-     *   - jitter == true      -> base delay scaled by a pseudo-random
-     *                            factor between 40% and 140%, capped at 154.
-     */
+    // If msDelay != 0 delay the connection up to 110ms
+    // If jitter = true, randomly spread the delay between 60 and 160 percent. Cap at 176ms
     void keyDelay() {
         if (msDelay == 0) {
             return;
@@ -71,16 +59,14 @@ class SparktypeKeyboard : public DigiKeyboardDevice {
         unsigned int wait = msDelay % 111;
 
         if (jitter && msDelay > 5) {
-            // 32-bit LCG (Numerical Recipes constants), no libc dependency.
             static uint32_t state = 0x9E3779B9UL;
             state = state * 1664525UL + 1013904223UL;
 
-            // factor in [40, 140] -> 40%..140% of the base delay.
-            unsigned int factor = 40 + (unsigned int)((state >> 16) % 101);
+            unsigned int factor = 60 + (unsigned int)((state >> 16) % 101);
             wait = (wait * factor) / 100;
 
-            if (wait > 154) {
-                wait = 154;
+            if (wait > 176) {
+                wait = 176;
             }
         }
 
@@ -89,7 +75,6 @@ class SparktypeKeyboard : public DigiKeyboardDevice {
         }
     }
 
-    // Every stroke goes through the default spacing above.
     void sendKeyStroke(byte keyStroke) {
         keyDelay();
         DigiKeyboardDevice::sendKeyStroke(keyStroke);
