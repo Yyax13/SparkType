@@ -10,7 +10,18 @@ void mainSetup() {
     // Blinks for 3 secs
     blinkAlert(3);
     SparkKeyboard.println("# Olá, Mundo!!");
+
+    // With delay 50ms without jitter
+    SparkKeyboard.msDelay = 50;
     SparkKeyboard.println("# Hello, World!!");
+
+    // With jitter
+    SparkKeyboard.jitter = true;
+    SparkKeyboard.println("# Bonjour le monde!!");
+
+    // Higher delay
+    SparkKeyboard.msDelay = 80;
+    SparkKeyboard.println("# Ciao mondo!!");
 }
 
 void mainLoop() {

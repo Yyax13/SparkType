@@ -38,13 +38,73 @@
 
 #include <DigiKeyboard.h>
 #include <avr/pgmspace.h>
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
 class SparktypeKeyboard : public DigiKeyboardDevice {
   public:
+    bool jitter = false;
+    unsigned int msDelay = 0;
     size_t write(uint8_t chr);
     void sendKeyReport(unsigned char *array, const unsigned int size);
+
+    /*
+     * Default key spacing, shared by every layout.
+     *
+     * This is the default behaviour of the SparkKeyboard spec: layouts do
+     * not need to call it, they just send strokes and the delay is applied
+     * automatically (see the sendKeyStroke overloads below).
+     *
+     * msDelay has no upper bound and there is no cap helper here, so the
+     * base delay is wrapped with modulo 111: it always lands in [0, 110] ms.
+     *   - msDelay == 0        -> no delay at all.
+     *   - msDelay <= 5        -> plain delay, jitter is ignored.
+     *   - jitter == true      -> base delay scaled by a pseudo-random
+     *                            factor between 40% and 140%, capped at 154.
+     */
+    void keyDelay() {
+        if (msDelay == 0) {
+            return;
+        }
+
+        unsigned int wait = msDelay % 111;
+
+        if (jitter && msDelay > 5) {
+            // 32-bit LCG (Numerical Recipes constants), no libc dependency.
+            static uint32_t state = 0x9E3779B9UL;
+            state = state * 1664525UL + 1013904223UL;
+
+            // factor in [40, 140] -> 40%..140% of the base delay.
+            unsigned int factor = 40 + (unsigned int)((state >> 16) % 101);
+            wait = (wait * factor) / 100;
+
+            if (wait > 154) {
+                wait = 154;
+            }
+        }
+
+        if (wait) {
+            delay(wait);
+        }
+    }
+
+    // Every stroke goes through the default spacing above.
+    void sendKeyStroke(byte keyStroke) {
+        keyDelay();
+        DigiKeyboardDevice::sendKeyStroke(keyStroke);
+    }
+
+    void sendKeyStroke(byte keyStroke, byte modifiers) {
+        keyDelay();
+        DigiKeyboardDevice::sendKeyStroke(keyStroke, modifiers);
+    }
+
+    void sendKeyStroke(byte keyStroke, byte modifiers, bool aUseFeedbackLed) {
+        keyDelay();
+        DigiKeyboardDevice::sendKeyStroke(keyStroke, modifiers,
+                                          aUseFeedbackLed);
+    }
 };
 
 /*
