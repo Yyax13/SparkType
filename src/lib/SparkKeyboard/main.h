@@ -52,27 +52,23 @@ class SparktypeKeyboard : public DigiKeyboardDevice {
     // If msDelay != 0 delay the connection up to 110ms
     // If jitter = true, randomly spread the delay between 60 and 160 percent. Cap at 176ms
     void keyDelay() {
-        if (msDelay == 0) {
+        if (msDelay == 0)
             return;
-        }
 
         unsigned int wait = msDelay % 111;
-
-        if (jitter && msDelay > 5) {
+        if (jitter) {
             static uint32_t state = 0x9E3779B9UL;
             state = state * 1664525UL + 1013904223UL;
 
             unsigned int factor = 60 + (unsigned int)((state >> 16) % 101);
             wait = (wait * factor) / 100;
 
-            if (wait > 176) {
+            if (wait > 176)
                 wait = 176;
-            }
         }
 
-        if (wait) {
+        if (wait)
             delay(wait);
-        }
     }
 
     void sendKeyStroke(byte keyStroke) {
